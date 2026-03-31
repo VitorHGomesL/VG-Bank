@@ -3,6 +3,8 @@ Bem-vindo ao repositório do VG Bank! Este é um projeto de estudo em Python que
 
 Este projeto marca o início da minha jornada na programação, saindo da "estaca zero" em uma transição de carreira da área jurídica para a tecnologia. O desenvolvimento é focado na autonomia e na aplicação prática de conceitos fundamentais.
 
+Dado o foco do projeto ser os estudos de Python, e não uma aplicação real, destaco que ferramentas de Inteligência Artificial, nesse caso, o Gemini, foi utilizado somente para dicas e resolução de erros, não tendo absolutamente nenhuma linha de código neste projeto escrito por IA.
+
 🚀 Sobre o Projeto
 O VG Bank foi construído para aplicar conceitos de lógica de programação, manipulação de arquivos e orientação a objetos. Atualmente, o sistema permite o cadastro de novos clientes, armazenamento de dados em arquivos de texto e uma interface básica de administração.
 
@@ -45,4 +47,17 @@ O VG Bank é um projeto vivo. Minhas próximas metas de estudo incluem:
 [ ] Criar tratamento de erros (Exceções) para tornar o sistema mais robusto.
 
 [ ] Migrar a persistência de .txt para um banco de dados SQLite.
+
+Log de alterações
+
+##V0.2 
+
+Separação da conversa com o usuário: Os comandos de input() foram retirados de dentro das funções do arquivo Cliente.py. Agora, quem faz as perguntas ao usuário é o main.py, deixando o código mais limpo.
+
+Envio de dados por parâmetros: A função de cadastrar agora recebe as informações (nome, e-mail, etc.) prontas. Ela não precisa mais "parar" para perguntar nada ao teclado; ela apenas processa o que recebe do main.py.
+
+Correção no salvamento de arquivos: A função de salvar foi ajustada para receber o usuário que acabou de ser criado. Isso resolveu o erro onde o sistema não conseguia acessar os dados do cliente para escrever no usuarios.txt.
+
+Fluxo de boas-vindas direto: Assim que o usuário termina o cadastro, o main.py já consegue usar o nome e o e-mail registrados para mostrar na tela, sem precisar ler o arquivo de novo.
+
 
