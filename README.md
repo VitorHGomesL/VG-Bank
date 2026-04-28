@@ -1,63 +1,69 @@
-🏦 VG Bank - Sistema Bancário em CLI
+# 🏦 VG Bank - Sistema Bancário em CLI
+
 Bem-vindo ao repositório do VG Bank! Este é um projeto de estudo em Python que simula um sistema bancário operado via linha de comando (CLI).
 
 Este projeto marca o início da minha jornada na programação, saindo da "estaca zero" em uma transição de carreira da área jurídica para a tecnologia. O desenvolvimento é focado na autonomia e na aplicação prática de conceitos fundamentais.
 
-Dado o foco do projeto ser os estudos de Python, e não uma aplicação real, destaco que ferramentas de Inteligência Artificial, nesse caso, o Gemini, foi utilizado somente para dicas e resolução de erros, não tendo absolutamente nenhuma linha de código neste projeto escrito por IA.
+> ⚠️ **Nota sobre o direcionamento do projeto:** O foco do VG Bank se desviou parcialmente da intenção original. Com o início do bootcamp **Luizalabs - Back-end com Python - 2ª Edição** da [DIO](https://www.dio.me/), grande parte do código foi adaptada para estar em conformidade com os desafios propostos pelo programa. O projeto continua sendo desenvolvido de forma autônoma, mas agora também serve como entrega prática do bootcamp.
 
-🚀 Sobre o Projeto
-O VG Bank foi construído para aplicar conceitos de lógica de programação, manipulação de arquivos e orientação a objetos. Atualmente, o sistema permite o cadastro de novos clientes, armazenamento de dados em arquivos de texto e uma interface básica de administração.
+Dado o foco do projeto ser os estudos de Python, e não uma aplicação real, destaco que ferramentas de Inteligência Artificial foram utilizadas somente para dicas e resolução de erros, não tendo absolutamente nenhuma linha de código neste projeto escrita por IA.
 
-🛠️ Tecnologias e Ferramentas
-Linguagem: Python 3.14.3
+---
 
-Ambiente de Estudo: 
+## 🚀 Sobre o Projeto
 
-Persistência: Arquivos de texto (.txt)
+O VG Bank foi construído para aplicar conceitos de lógica de programação, manipulação de arquivos e orientação a objetos. Atualmente, o sistema permite o cadastro de novos clientes com validação de dados, armazenamento em arquivos de texto e uma interface básica de administração.
 
-📂 Estrutura de Arquivos
-O projeto é modularizado para facilitar a manutenção e o crescimento do sistema:
+---
 
-main.py: O ponto de entrada do aplicativo. Gerencia os menus de acesso para Clientes e Administradores.
+## 🛠️ Tecnologias e Ferramentas
 
-Cliente.py: Contém a classe Cliente e a lógica de cadastro (primeiro acesso).
+- **Linguagem:** Python 3.14.3
+- **Persistência:** Arquivos de texto (.txt) (**DESCONTINUADO!!!**)
 
-Administrador.py: Módulo responsável pelas funções de gestão, como listagem e deleção de usuários.
+---
 
-usuarios.txt: O "banco de dados" simplificado onde as informações são persistidas.
+## 📂 Estrutura de Arquivos
 
-🧠 Aprendizados Técnicos
+- **main.py** — Ponto de entrada do aplicativo. Gerencia os menus de acesso para Clientes e Administradores.
+- **Cliente.py** — Contém as classes `Conta`, `Cliente`, `pessoaFisica` e as classes de transação. Toda a lógica de dados e validação vive aqui.
+- **Administrador.py** — Módulo responsável pelas funções de gestão, como listagem e deleção de usuários.
+- **usuarios.txt** — O "banco de dados" simplificado onde as informações são persistidas. (**DESCONTINUADO!!!**)
+
+---
+
+## 🧠 Aprendizados Técnicos
+
 Neste estágio do projeto, foquei em dominar:
 
-Orientação a Objetos (POO): Criação de classes e métodos construtores para moldar os dados do cliente.
+- **Orientação a Objetos (POO):** Criação de classes, herança (`pessoaFisica` herdando de `Cliente`) e encapsulamento com atributos privados.
+- **Getters e Setters:** Uso de `@property` e `@atributo.setter` para controlar o acesso e a validação dos dados diretamente na atribuição.
+- **Tratamento de Erros:** Uso de `try/except` para capturar `ValueError` e loops `while` para repetir a coleta de dados até que sejam válidos.
+- **Manipulação de Arquivos:** Uso do gerenciador de contexto `with open` e modos de escrita para garantir persistência dos dados. (**DESCONTINUADO!!!**)
+- **Modularização:** Divisão do código em diferentes arquivos para manter a organização.
 
-Manipulação de Arquivos: Uso do gerenciador de contexto with open e modos de escrita (a para append) para garantir que os dados não sejam perdidos.
+---
 
-Modularização: Divisão do código em diferentes arquivos para manter a organização.
+## 📈 Próximos Passos (Roadmap)
 
-Lógica de Fluxo: Implementação de loops while e condicionais para navegação no menu.
+- [ ] Implementar sistema de Login com validação por CPF ou número de conta.
+- [ ] Adicionar funções de Depósito, Saque e Transferência.
+- [ ] Completar as classes `contaCorrente`, `Historico`, `Saque` e `Deposito`.
+- [ ] Migrar a persistência de `.txt` para um banco de dados SQLite. (**.txt DESCONTINUADO!!!, futuro banco de dados permanece!!**)
 
-📈 Próximos Passos (Roadmap)
-O VG Bank é um projeto vivo. Minhas próximas metas de estudo incluem:
+---
 
-[ ] Implementar sistema de Login com validação de e-mail.
+## 📋 Log de Alterações
 
-[ ] Adicionar funções de Depósito, Saque e Transferência.
+### V0.3
+- **Reestruturação completa do Cliente.py:** A classe única `Cliente` foi substituída por uma hierarquia de classes — `Conta`, `contaCorrente`, `Cliente`, `pessoaFisica`, `Historico`, `Transacao`, `Saque` e `Deposito` — alinhando o projeto aos requisitos do bootcamp DIO.
+- **Encapsulamento com getters e setters:** Os atributos de `pessoaFisica` (nome, CPF, data de nascimento) e de `Conta` (saldo) passaram a usar `@property` e setters com validação, impedindo que dados inválidos sejam atribuídos diretamente.
+- **Validações implementadas:** CPF (11 dígitos numéricos), nome (mínimo 3 caracteres, sem especiais), data de nascimento (formato DDMMAAAA, maioridade), e saldo (apenas numérico).
+- **Tratamento de erros no cadastro:** O fluxo de `primeiro_acesso` no `main.py` passou a usar `try/except ValueError` dentro de um loop `while`, repetindo a coleta de dados até que todos sejam válidos.
 
-[ ] Criar tratamento de erros (Exceções) para tornar o sistema mais robusto.
-
-[ ] Migrar a persistência de .txt para um banco de dados SQLite.
-
-Log de alterações
-
-##V0.2 
-
-Separação da conversa com o usuário: Os comandos de input() foram retirados de dentro das funções do arquivo Cliente.py. Agora, quem faz as perguntas ao usuário é o main.py, deixando o código mais limpo.
-
-Envio de dados por parâmetros: A função de cadastrar agora recebe as informações (nome, e-mail, etc.) prontas. Ela não precisa mais "parar" para perguntar nada ao teclado; ela apenas processa o que recebe do main.py.
-
-Correção no salvamento de arquivos: A função de salvar foi ajustada para receber o usuário que acabou de ser criado. Isso resolveu o erro onde o sistema não conseguia acessar os dados do cliente para escrever no usuarios.txt.
-
-Fluxo de boas-vindas direto: Assim que o usuário termina o cadastro, o main.py já consegue usar o nome e o e-mail registrados para mostrar na tela, sem precisar ler o arquivo de novo.
-
+### V0.2
+- **Separação da conversa com o usuário:** Os comandos de `input()` foram retirados de dentro das funções do arquivo `Cliente.py`. Agora, quem faz as perguntas ao usuário é o `main.py`.
+- **Envio de dados por parâmetros:** A função de cadastrar agora recebe as informações prontas, sem precisar interagir com o teclado diretamente.
+- **Correção no salvamento de arquivos:** A função de salvar foi ajustada para receber o usuário recém-criado e escrever corretamente no `usuarios.txt`.
+- **Fluxo de boas-vindas direto:** O `main.py` passou a usar os dados do objeto criado para exibir a mensagem de boas-vindas, sem precisar reler o arquivo.
 
