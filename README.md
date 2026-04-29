@@ -47,13 +47,20 @@ Neste estágio do projeto, foquei em dominar:
 ## 📈 Próximos Passos (Roadmap)
 
 - [ ] Implementar sistema de Login com validação por CPF ou número de conta.
-- [ ] Adicionar funções de Depósito, Saque e Transferência.
-- [ ] Completar as classes `contaCorrente`, `Historico`, `Saque` e `Deposito`.
+- [x] Adicionar funções de Depósito, Saque e Transferência.
+- [x] Completar as classes `contaCorrente`, `Historico`, `Saque` e `Deposito`.
 - [ ] Migrar a persistência de `.txt` para um banco de dados SQLite. (**.txt DESCONTINUADO!!!, futuro banco de dados permanece!!**)
+- [ ] Adicionar mais validadores para prevenção da integridade do sistema na criação do cliente(por exemplo, na hipótese do usuário inserir somente os dois últimos digitos da data)
 
 ---
 
 ## 📋 Log de Alterações
+### V0.4
+- **Roteamento com match/case:** Implementação da função selecao_menu no main.py, utilizando a estrutura de match/case para gerenciar a navegação entre os diferentes módulos do sistema (IN, PA, CL, CO, TR, AD).
+
+- **Interface visual em ASCII:** Atualização dos menus e mensagens de confirmação com molduras gráficas e uso de emojis para indicar o status das operações (sucesso, erro ou alerta).(IMPORTANTE! A parte visual dos menus foi feita por IA(Prompt usado: "Me retorne os arquivos cliente e main com menus mais bonitos e dentro do padrão alto do mercado hoje, lembrando que suas mudanças são SOMENTE VISUAIS NAS STRINGS, e nada além disso"))
+
+- **Ajuste na herança de contas:** Correção do método @classmethod nova_conta na classe contaCorrente para incluir os parâmetros de limite e limite_saques, garantindo a criação correta do objeto conforme os requisitos do projeto.
 
 ### V0.3
 - **Reestruturação completa do Cliente.py:** A classe única `Cliente` foi substituída por uma hierarquia de classes — `Conta`, `contaCorrente`, `Cliente`, `pessoaFisica`, `Historico`, `Transacao`, `Saque` e `Deposito` — alinhando o projeto aos requisitos do bootcamp DIO.

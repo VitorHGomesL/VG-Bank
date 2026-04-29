@@ -1,14 +1,22 @@
+import textwrap
 from abc import ABC, abstractmethod
 from datetime import date
 
+#################################################################
+#####------------------------CLASSES------------------------#####
+#################################################################
+
 class Conta:
-    def __init__(self, conta, numero):
+    def __init__(self, cliente, numero):
         self._saldo = 0
-        self._conta = conta
+        self._cliente = cliente
         self._agencia = "0001"
         self._numero = numero
         self._historico = Historico()
-        
+
+    @classmethod
+    def nova_conta(cls, cliente, numero):
+        return cls(cliente, numero)    
 
     @property
     def saldo(self):
@@ -16,26 +24,50 @@ class Conta:
     
     @saldo.setter
     def saldo(self, valor):
-        
-        if isinstance(valor, int):
-            valor = float(valor)
-            self._saldo = valor
-        elif not isinstance(valor, (int, float)):
+
+        if not isinstance(valor, (int, float)):
             raise ValueError("Favor inserir um número")
-        else:
-            self._saldo = valor
+
+        valor = float(valor)            
+        self._saldo = valor
 
     @property
-    def numero_conta(self):
-        numero_conta = f"{self._agencia}/{self._numero}"
-        return numero_conta
+    def numero_conta(self):        
+        return f"{self._agencia}/{self._numero}"
+    
+    def sacar(self, valor):
+        if self._saldo < valor:
+            print("\n❌ Operação negada: Saldo insuficiente para realizar este saque.")
+            return False
+        else:
+            self._saldo -= valor
+            print("\n✅ Saque realizado com sucesso!")
+            return True
+        
+    def depositar(self, valor):
+        if valor > 0:
+            self._saldo += valor
+            print("\n✅ Depósito realizado com sucesso!")
+            return True
+        else:
+            print("\n❌ Valor inválido. Por favor, insira um valor positivo.")
+            return False
 
+    def __str__(self):
+        return f"""\
+            Agência:\t{self.agencia}
+            C/C:\t\t{self.numero}
+            Titular:\t{self.cliente.nome}
+        """
 
 class contaCorrente(Conta):
-    def __init__(self, limite, limite_saques):
+    def __init__(self, cliente, numero, limite, limite_saques):
+        super().__init__(cliente, numero)
         self._limite = limite
         self._limite_saques = limite_saques
-    
+    @classmethod
+    def nova_conta(cls, cliente, numero, limite = 500, limite_saques=3):
+        return cls(cliente, numero, limite, limite_saques)
 
 
 class Cliente:
@@ -43,10 +75,23 @@ class Cliente:
         self.endereco = endereco
         self.contas = []
     
-    def realizar_transacao():
-        pass
-    def adicionar_conta(self, Conta = Conta):
-        pass
+    @property
+    def endereco(self):
+        return self._endereco
+    
+    @endereco.setter
+    def endereco(self, valor):
+        if len(valor) < 5:
+            raise ValueError(f"{valor} é muito curto. Por favor, informe o endereço completo (Rua, número, bairro, cidade e estado)")
+        if not any(char.isdigit() for char in valor):
+            raise ValueError("Endereço incompleto. Por favor, inclua o número do logradouro")
+        self._endereco = valor
+
+    def realizar_transacao(self, conta, transacao):
+        transacao.registrar(conta)
+
+    def adicionar_conta(self, conta):
+        self.contas.append(conta)
 
 
 class pessoaFisica(Cliente):
@@ -59,16 +104,16 @@ class pessoaFisica(Cliente):
     @property
     def cpf(self):
         if len(self._cpf) != 11:
-            return f"CPF Inválido, favor inserir 11 digitos, sem . ou -"
+            return "CPF Inválido - formato esperado: 11 dígitos numéricos"
         
         return f"{self._cpf[:3]}.{self._cpf[3:6]}.{self._cpf[6:9]}-{self._cpf[9:]}"
 
     @cpf.setter
     def cpf(self, valor):
         if len(valor) != 11:
-            raise ValueError(f"CPF Inválido, favor selecione 2 abaixo e retorne, digite apenas os 11 digitos, sem . ou -, valor inserido: {self._cpf}")
+            raise ValueError(f"CPF inválido. Digite exatamente 11 dígitos numéricos, sem pontos ou traços. Valor informado: {valor}")
         if not valor.isdigit():
-            raise ValueError("Insira somente números no CPF")
+            raise ValueError("CPF inválido. Use apenas números, sem pontos, traços ou espaços")
         self._cpf = valor
 
     @property
@@ -78,9 +123,9 @@ class pessoaFisica(Cliente):
     @nome.setter
     def nome(self, valor):
         if len(valor) <= 2:
-            raise ValueError("Mínimo de 3 letras no nome")
+            raise ValueError("Nome muito curto. Digite seu nome completo (mínimo 3 caracteres)")
         if not all(c.isalpha() or c.isspace() for c in valor):
-            raise ValueError("Cáracteres especiais não são aceitos")
+            raise ValueError("Nome inválido. Use apenas letras e espaços, sem números ou caracteres especiais")
         self._nome = valor
 
     @property
@@ -90,26 +135,130 @@ class pessoaFisica(Cliente):
     @data_nascimento.setter
     def data_nascimento(self, valor):
         if len(valor) != 8:
-            raise ValueError("Insira uma data válida")
+            raise ValueError("Data inválida. Use o formato DDMMAAAA (exemplo: 15031990)")
         if int(valor[4:]) > (date.today().year - 18):
-            raise ValueError("Muito novo para abrir uma conta")
-        if len(valor) == 8:
-            self._data_nascimento = f"{valor[0:2]}/{valor[2:4]}/{valor[4:8]}"
-
-    
-    def salvar_cliente_PF(nome, cpf, data_nascimento, endereco):
-        dados_para_salvar = f'"nome":{nome}, "cpf":{cpf}, "data_nascimento":{data_nascimento}, "endereco":{endereco}, "numero": {Conta().numero_conta}'
-        return dados_para_salvar
-
+            raise ValueError("Idade insuficiente. É necessário ter no mínimo 18 anos para abrir uma conta")
+        self._data_nascimento = f"{valor[0:2]}/{valor[2:4]}/{valor[4:8]}"
 
 class Historico:
-    pass
+    def __init__(self):
+        self._transacoes = []
+    
+    def adicionar_transacao(self, transacoes):
+        self._transacoes.append(transacoes)
 
 class Transacao(ABC):
-    pass
+    @property
+    @abstractmethod
+    def valor(self):
+        pass
+
+    @abstractmethod
+    def registrar(self, conta):
+        pass
 
 class Saque(Transacao):
-    pass
+    def __init__(self, valor):
+        self._valor = valor
+
+    @property
+    def valor(self):
+        return self._valor
+    
+    @valor.setter
+    def valor(self, valor):
+        if valor < 0:
+            raise ValueError("Valor de saque inválido. O valor deve ser positivo")
+        
+    def registrar(self, conta):
+        sucesso = conta.sacar(self._valor)
+        if sucesso:
+            conta._historico.adicionar_transacao(self)
+            return "Saque realizado com sucesso!"
+        else :
+            return "Não foi possível realizar o saque"
 
 class Deposito(Transacao):
-    pass
+    def __init__(self, valor):
+        self._valor = valor
+
+    @property
+    def valor(self):
+        return self._valor
+    
+    @valor.setter
+    def valor(self, valor):
+        if valor < 0:
+            raise ValueError("Valor de depósito inválido. O valor deve ser positivo")
+        
+    def registrar(self, conta):
+        sucesso = conta.depositar(self._valor)
+        if sucesso:
+            conta._historico.adicionar_transacao(self)
+            return "Depósito realizado com sucesso!"
+        else:
+            return "Não foi possível realizar o depósito"
+        
+#################################################################
+#####----------------------UTILIÁRIOS-----------------------#####
+#################################################################
+def filtrar_cliente(cpf, clientes):
+    clientes_filtrados = [cliente for cliente in clientes if cliente.cpf == cpf]
+    return clientes_filtrados[0] if clientes_filtrados else None
+
+def filtrar_conta_numero(numero_buscado, lista_contas):
+
+    for conta in lista_contas:
+
+        if str(conta._numero) == str(numero_buscado):
+            return conta
+        
+    return None
+
+def listar_contas(contas):
+    for conta in contas:
+        print("=" * 100)
+        print(textwrap.dedent(str(conta)))
+
+def depositar(conta):
+    valor = float(input("💰 Qual valor deseja depositar? R$ "))
+    __autorizacao_deposito = input(f'''
+╔════════════════════════════════════════╗
+║       CONFIRMAÇÃO DE DEPÓSITO          ║
+╠════════════════════════════════════════╣
+║  Valor: R$ {valor:>28.2f} ║
+╠════════════════════════════════════════╣
+║  [1] Confirmar operação                ║
+║  [2] Cancelar e digitar novo valor     ║
+╚════════════════════════════════════════╝
+Sua escolha: ''')
+    match __autorizacao_deposito: 
+        case "1":
+            transacao = Deposito(valor)
+            transacao.registrar(conta)
+            return True
+        case "2":
+            return False
+        case _:
+            print("\n⚠️  Opção inválida selecionada")
+            return True
+
+def sacar(conta):
+        valor = float(input("💵 Qual valor deseja sacar? R$ "))
+        __autorizacao_saque = input(f'''
+╔════════════════════════════════════════╗
+║         CONFIRMAÇÃO DE SAQUE           ║
+╠════════════════════════════════════════╣
+║  Valor: R$ {valor:>28.2f} ║
+╠════════════════════════════════════════╣
+║  [1] Confirmar operação                ║
+║  [2] Cancelar e digitar novo valor     ║
+╚════════════════════════════════════════╝
+Sua escolha: ''')
+        match __autorizacao_saque: 
+            case "1":
+                transacao = Saque(valor)
+                transacao.registrar(conta)
+                return True
+            case "2":
+                return False
