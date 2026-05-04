@@ -56,8 +56,6 @@ Neste estágio do projeto, foquei em dominar:
 
 ## 📋 Log de Alterações
 
-## 📋 Log de Alterações
-
 ### V1.0
 - **Correção de fluxo e persistência do Menu:** Implementação de um loop global na função principal, garantindo que o sistema retorne aos menus corretos em vez de encerrar precocemente após falhas de login ou navegação.
 - **Ajuste na lógica de navegação:** Remoção de interrupções (`breaks`) indevidas no `menu_cliente` e `menu_acessar_conta`, permitindo que o usuário tente acessar novamente ou mude de opção sem fechar o programa.
