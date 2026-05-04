@@ -4,9 +4,9 @@ Bem-vindo ao repositório do VG Bank! Este é um projeto de estudo em Python que
 
 Este projeto marca o início da minha jornada na programação, saindo da "estaca zero" em uma transição de carreira da área jurídica para a tecnologia. O desenvolvimento é focado na autonomia e na aplicação prática de conceitos fundamentais.
 
-> ⚠️ **Nota sobre o direcionamento do projeto:** O foco do VG Bank se desviou parcialmente da intenção original. Com o início do bootcamp **Luizalabs - Back-end com Python - 2ª Edição** da [DIO](https://www.dio.me/), grande parte do código foi adaptada para estar em conformidade com os desafios propostos pelo programa. O projeto continua sendo desenvolvido de forma autônoma, mas agora também serve como entrega prática do bootcamp.
+> ⚠️ **Nota sobre o direcionamento do projeto:** O foco do VG Bank se desviou parcialmente da intenção original. Com o início do bootcamp **Luizalabs - Back-end com Python - 2ª Edição** da [DIO](https://www.dio.me/), grande parte do código foi adaptada para estar em conformidade com os desafios propostos pelo programa. O projeto continua sendo desenvolvido de forma autônoma, mas agora também serve como entrega prática do bootcamp, de modo que conforme adquirir novos conhecimentos, novas funcionalidades não relacionadas ao desafio podem ser adicionadas.
 
-Dado o foco do projeto ser os estudos de Python, e não uma aplicação real, destaco que ferramentas de Inteligência Artificial foram utilizadas somente para dicas e resolução de erros, não tendo absolutamente nenhuma linha de código neste projeto escrita por IA.
+Dado o foco do projeto ser os estudos de Python, e não uma aplicação real, destaco que ferramentas de Inteligência Artificial foram utilizadas somente para dicas, resolução de erros e criação das strings dos menus para deixa-los mais atrativos, não tendo absolutamente nenhuma linha de código neste projeto escrita pela IA.
 
 ---
 
@@ -46,7 +46,7 @@ Neste estágio do projeto, foquei em dominar:
 
 ## 📈 Próximos Passos (Roadmap)
 
-- [ ] Implementar sistema de Login com validação por CPF ou número de conta.
+- [x] Implementar sistema de Login com validação por CPF ou número de conta.
 - [x] Adicionar funções de Depósito, Saque e Transferência.
 - [x] Completar as classes `contaCorrente`, `Historico`, `Saque` e `Deposito`.
 - [ ] Migrar a persistência de `.txt` para um banco de dados SQLite. (**.txt DESCONTINUADO!!!, futuro banco de dados permanece!!**)
@@ -55,6 +55,16 @@ Neste estágio do projeto, foquei em dominar:
 ---
 
 ## 📋 Log de Alterações
+
+## 📋 Log de Alterações
+
+### V1.0
+- **Correção de fluxo e persistência do Menu:** Implementação de um loop global na função principal, garantindo que o sistema retorne aos menus corretos em vez de encerrar precocemente após falhas de login ou navegação.
+- **Ajuste na lógica de navegação:** Remoção de interrupções (`breaks`) indevidas no `menu_cliente` e `menu_acessar_conta`, permitindo que o usuário tente acessar novamente ou mude de opção sem fechar o programa.
+- **Adição da função de Extrato** Implementação da função de extrato, que realiza o parsing do histórico de transações, identifica o tipo (Saque/Depósito) e renderiza as informações em uma interface personalizada
+- **Refinação de UX (Experiência do Usuário):** Inclusão de mensagens de erro mais claras e opção de retorno ao Menu Inicial diretamente das telas de acesso por CPF ou Conta.
+- **Validação de Regras de Negócio em POO:** Ajuste fino nos métodos de depósito e saque para garantir a atualização precisa do saldo e o registro correto no histórico de transações.
+
 ### V0.4
 - **Roteamento com match/case:** Implementação da função selecao_menu no main.py, utilizando a estrutura de match/case para gerenciar a navegação entre os diferentes módulos do sistema (IN, PA, CL, CO, TR, AD).
 

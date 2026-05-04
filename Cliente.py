@@ -1,6 +1,6 @@
-import textwrap
+import textwrap 
 from abc import ABC, abstractmethod
-from datetime import date
+from datetime import datetime
 
 #################################################################
 #####------------------------CLASSES------------------------#####
@@ -13,6 +13,7 @@ class Conta:
         self._agencia = "0001"
         self._numero = numero
         self._historico = Historico()
+        self._saques_realizados = 0
 
     @classmethod
     def nova_conta(cls, cliente, numero):
@@ -28,6 +29,9 @@ class Conta:
         if not isinstance(valor, (int, float)):
             raise ValueError("Favor inserir um número")
 
+        if self._saldo < 0:
+            self._saldo = 0
+
         valor = float(valor)            
         self._saldo = valor
 
@@ -39,9 +43,11 @@ class Conta:
         if self._saldo < valor:
             print("\n❌ Operação negada: Saldo insuficiente para realizar este saque.")
             return False
-        else:
+
+        if self._saldo > valor:
             self._saldo -= valor
-            print("\n✅ Saque realizado com sucesso!")
+            print(f"\n✅ Saque no valor de R${valor:.2f} realizado com sucesso!")
+            self._saques_realizados +=1
             return True
         
     def depositar(self, valor):
@@ -55,12 +61,12 @@ class Conta:
 
     def __str__(self):
         return f"""\
-            Agência:\t{self.agencia}
-            C/C:\t\t{self.numero}
-            Titular:\t{self.cliente.nome}
+            Agência:\t{self._agencia}
+            C/C:\t\t{self._numero}
+            Titular:\t{self._cliente.nome}
         """
 
-class contaCorrente(Conta):
+class ContaCorrente(Conta):
     def __init__(self, cliente, numero, limite, limite_saques):
         super().__init__(cliente, numero)
         self._limite = limite
@@ -69,6 +75,18 @@ class contaCorrente(Conta):
     def nova_conta(cls, cliente, numero, limite = 500, limite_saques=3):
         return cls(cliente, numero, limite, limite_saques)
 
+    def sacar(self, valor):
+        
+        if valor > self._limite:
+            print("\n❌ Operação negada: Limite da conta insuficiente para realizar este saque.")
+            return False        
+
+        if self._saques_realizados >= self._limite_saques:
+            print("\n❌ Operação negada: Sem saques restantes")
+            return False
+        
+        return super().sacar(valor)       
+        
 
 class Cliente:
     def __init__(self, endereco):
@@ -94,7 +112,7 @@ class Cliente:
         self.contas.append(conta)
 
 
-class pessoaFisica(Cliente):
+class PessoaFisica(Cliente):
     def __init__(self, endereco, nome, cpf, data_nascimento):
         super().__init__(endereco)
         self.nome = nome
@@ -136,17 +154,30 @@ class pessoaFisica(Cliente):
     def data_nascimento(self, valor):
         if len(valor) != 8:
             raise ValueError("Data inválida. Use o formato DDMMAAAA (exemplo: 15031990)")
-        if int(valor[4:]) > (date.today().year - 18):
+        if int(valor[4:]) > (datetime.today().year - 18):
             raise ValueError("Idade insuficiente. É necessário ter no mínimo 18 anos para abrir uma conta")
         self._data_nascimento = f"{valor[0:2]}/{valor[2:4]}/{valor[4:8]}"
 
 class Historico:
     def __init__(self):
-        self._transacoes = []
+        self.transacoes = []
     
-    def adicionar_transacao(self, transacoes):
-        self._transacoes.append(transacoes)
-
+    @property
+    def transacoes(self):
+        return self._transacoes
+    
+    @transacoes.setter
+    def transacoes(self, valor):
+        self._transacoes = valor
+    
+    def adicionar_transacao(self, transacao):
+        self._transacoes.append(
+            {
+                "tipo": transacao.__class__.__name__,
+                "valor": transacao.valor,
+                "data": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+            }
+        )
 class Transacao(ABC):
     @property
     @abstractmethod
@@ -262,3 +293,37 @@ Sua escolha: ''')
                 return True
             case "2":
                 return False
+        
+def exibir_extrato(conta):
+    print('''
+╔════════════════════════════════════════╗
+║          EXTRATO BANCÁRIO              ║
+╠════════════════════════════════════════╣''')
+    
+    transacoes = conta._historico._transacoes
+    
+    if not transacoes:
+        print('''║                                        ║
+║  📭 Nenhuma movimentação realizada     ║
+║                                        ║''')
+    else:
+        for transacao in transacoes:
+            tipo = transacao["tipo"]
+            valor = transacao["valor"]
+            data = transacao["data"]
+            
+            if tipo == "Saque":
+                print(f'''║                                        ║
+║  💵 Saque                              ║
+║  Valor: R$ {valor:>5.2f} ║
+║  Data: {data:<29} ║''')
+            else:
+                print(f'''║                                        ║
+║  💰 Depósito                           ║
+║  Valor: R$ {valor:>5.2f} ║
+║  Data: {data:<29} ║''')
+    
+    print(f'''╠════════════════════════════════════════╣
+║  💳 Saldo atual: R$ {conta.saldo:>17.2f} ║
+╚════════════════════════════════════════╝
+''')    

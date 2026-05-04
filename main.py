@@ -17,7 +17,7 @@ def criar_conta(numero_conta, clientes, contas):
         print("\n❌ Cliente não encontrado. Verifique o CPF e tente novamente.")
         return
     
-    conta = contaCorrente.nova_conta(cliente = cliente, numero = numero_conta, limite = LIMITE_PADRAO, limite_saques = LIMITE_SAQUES_PADRAO)
+    conta = ContaCorrente.nova_conta(cliente = cliente, numero = numero_conta, limite = LIMITE_PADRAO, limite_saques = LIMITE_SAQUES_PADRAO)
     contas.append(conta)
     cliente.contas.append(conta)
 
@@ -38,6 +38,7 @@ def menu_acessar_cliente():
 ║                                        ║
 ║  [1] Por CPF                           ║
 ║  [2] Por número da conta               ║
+║  [3] Retornar ao Menu inicial          ║
 ╚════════════════════════════════════════╝''')
     __acesso = input("Sua escolha: ").strip()
 
@@ -56,6 +57,8 @@ def menu_acessar_cliente():
     if __acesso == "2":
         menu_acessar_conta()
 
+    if __acesso == "3":
+        selecao_menu("IN")
 def menu_acessar_conta():
     while True:
         numero_conta = input("\n🔢 Informe o número da conta (apenas números): ")
@@ -89,7 +92,7 @@ def menu_primeiro_acesso():
                     cpf = input("📋 CPF (apenas números): ")
                     endereco = input("🏠 Endereço completo: ")
                     data_nascimento = input("📅 Data de nascimento (DDMMAAAA): ")
-                    novo_usuario = pessoaFisica(endereco = endereco, nome = nome, cpf = cpf, data_nascimento = data_nascimento)
+                    novo_usuario = PessoaFisica(endereco = endereco, nome = nome, cpf = cpf, data_nascimento = data_nascimento)
                     print(f'''
 ╔════════════════════════════════════════╗
 ║      CONFIRMAÇÃO DE CADASTRO           ║
@@ -146,63 +149,62 @@ def menu_cliente():
             case "3":
                 selecao_menu("IN")
 
-def bem_vindo():
-    print('''
-╔════════════════════════════════════════╗
-║                                        ║
-║          🏦  VG BANK  🏦               ║
-║                                        ║
-║      Bem-vindo ao seu banco digital    ║
-║                                        ║
-╚════════════════════════════════════════╝
-''')
-
 def menu_transacoes(conta):
-    print(f'''
-╔════════════════════════════════════════╗
-║            MENU DE OPERAÇÕES           ║
-╠════════════════════════════════════════╣
-║💰 Saldo atual: R$ {conta.saldo:>18.2f} ║
-╠════════════════════════════════════════╣
-║  Selecione a operação desejada:        ║
-║                                        ║
-║  [1] 💳 Realizar depósito              ║
-║  [2] 💵 Realizar saque                 ║
-║  [3] 🔄 Transferência (em breve)       ║
-║  [4] ⬅️  Voltar                         ║
-╚════════════════════════════════════════╝''')
-    __acesso = input("Sua escolha: ").strip()
-    match __acesso:
-        case "1":
-            sucesso_deposito = depositar(conta = conta)
-            if sucesso_deposito:
-                print(f"\n✅ Depósito de R$ {conta.saldo:.2f} realizado com sucesso!")
-            elif not sucesso_deposito:
-                print("\n⚠️  Operação cancelada pelo usuário")
-            else:
-                print("\n❌ Não foi possível concluir o depósito. Por favor, tente novamente.")
-        case "2":
-            sucesso_saque = sacar(conta = conta)
-            if sucesso_saque:
-                print(f"\n✅ Saque de R$ {conta.saldo:.2f} realizado com sucesso!")
-            elif not sucesso_saque:
-                print("\n⚠️  Operação cancelada pelo usuário")
-            else:
-                print("\n❌ Não foi possível concluir o saque. Por favor, tente novamente.")
-        case "3":
-            print("\n⚙️  Funcionalidade em desenvolvimento. Aguarde as próximas atualizações!")
-            selecao_menu("TR", conta)
-        case "4":
-            print("\n↩️  Retornando ao menu anterior...")
-            selecao_menu("CL")
+    while True:
+        print(f'''
+    ╔════════════════════════════════════════╗
+    ║            MENU DE OPERAÇÕES           ║
+    ╠════════════════════════════════════════╣
+    ║💰 Saldo atual: R$ {conta.saldo:>18.2f} ║
+    ╠════════════════════════════════════════╣
+    ║  Selecione a operação desejada:        ║
+    ║                                        ║
+    ║  [1] 💳 Realizar depósito              ║
+    ║  [2] 💵 Realizar saque                 ║ 
+    ║  [3] 🔄 Exibir extrato                 ║                
+    ║  [4] 🔄 Transferência (em breve)       ║
+    ║  [5] ⬅️  Voltar                        ║
+    ╚════════════════════════════════════════╝''')
+        __acesso = input("Sua escolha: ").strip()
+        match __acesso:
+            case "1":
+                sucesso_deposito = depositar(conta = conta)
+                if sucesso_deposito:
+                    print(f"\n✅ Depósito de R$ {conta.saldo:.2f} realizado com sucesso!")
+                elif not sucesso_deposito:
+                    print("\n⚠️  Operação cancelada pelo usuário")
+                else:
+                    print("\n❌ Não foi possível concluir o depósito. Por favor, tente novamente.")
+            case "2":
+                sucesso_saque = sacar(conta = conta)
+                if sucesso_saque:
+                    print(f"\n✅ Saldo restante: {conta.saldo:.2f}")
+                elif not sucesso_saque:
+                    print("\n⚠️  Operação cancelada pelo usuário")
+                else:
+                    print(sucesso_saque)
+            case "3":
+                exibir_extrato(conta)
+            case "4":
+                print("\n⚙️  Funcionalidade em desenvolvimento. Aguarde as próximas atualizações!")
+                selecao_menu("TR", conta)
+            case "5":
+                print("\n↩️  Retornando ao menu anterior...")
+                selecao_menu("CL")
 
 def menu_inicial():
     menu_selecionado = "IN"
 
-    while menu_selecionado == "IN":
+    while True:
             
             print('''
 ╔════════════════════════════════════════╗
+║                                        ║
+║          🏦  VG BANK  🏦               ║
+║                                        ║
+║      Bem-vindo ao seu banco digital!   ║
+║                                        ║
+╠════════════════════════════════════════╣
 ║           MENU PRINCIPAL               ║
 ╠════════════════════════════════════════╣
 ║  Como deseja acessar o sistema?        ║
@@ -222,15 +224,15 @@ def menu_inicial():
 ╠════════════════════════════════════════╣
 ║  Você já é nosso cliente?              ║
 ║                                        ║
-║  [PA] Não, desejo abrir uma conta      ║
-║  [CL] Sim, já possuo cadastro          ║
+║  [1] Não, desejo abrir uma conta      ║
+║  [2] Sim, já possuo cadastro          ║
 ╚════════════════════════════════════════╝''')
                     acesso_cliente = input("Sua escolha: ")
                     match acesso_cliente:
-                        case "PA":
+                        case "1":
                             menu_primeiro_acesso()
                         
-                        case "CL":
+                        case "2":
                             sucesso = menu_acessar_cliente()
                             if sucesso:
                                 menu_cliente()
@@ -262,7 +264,7 @@ def menu_inicial():
                 
                 case "0":
                     print("\n👋 Encerrando sistema... Até logo!")
-                    SystemExit()
+                    break
                 case _:
                     print("\n❌ Opção inválida. Por favor, selecione uma opção válida.")
 
@@ -311,7 +313,7 @@ TR  - Menu de Transações (Operações Bancárias)
 AD  - Menu Administrativo (em desenvolvimento)
 ═══════════════════════════════════════════════════════════
 '''
-tester = pessoaFisica(endereco = "Rua do Teste nº 50", nome = "Testador", cpf = "12345678900", data_nascimento = "010101")
+tester = PessoaFisica(endereco = "Rua do Teste nº 50", nome = "Testador", cpf = "12345678900", data_nascimento = "01012001")
 lista_clientes.append(tester)
-bem_vindo()
+
 menu_inicial()
