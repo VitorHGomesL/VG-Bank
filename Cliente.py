@@ -327,3 +327,20 @@ def exibir_extrato(conta):
 ║  💳 Saldo atual: R$ {conta.saldo:>17.2f} ║
 ╚════════════════════════════════════════╝
 ''')    
+    
+def criar_conta(numero_conta, clientes, contas):
+    LIMITE_PADRAO = 500.0
+    LIMITE_SAQUES_PADRAO = 3
+    cpf = input("📋 Confirme seu CPF (apenas números): ")
+    _cpf_formatado = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+    cliente = filtrar_cliente(_cpf_formatado, clientes)
+    
+    if not cliente:
+        print("\n❌ Cliente não encontrado. Verifique o CPF e tente novamente.")
+        return
+    
+    conta = ContaCorrente.nova_conta(cliente = cliente, numero = numero_conta, limite = LIMITE_PADRAO, limite_saques = LIMITE_SAQUES_PADRAO)
+    contas.append(conta)
+    cliente.contas.append(conta)
+
+    print(f"\n✅ Conta criada com sucesso!\n📌 Número da conta: {conta.numero_conta}")
