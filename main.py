@@ -287,6 +287,11 @@ AD  - Menu Administrativo (em desenvolvimento)
 ═══════════════════════════════════════════════════════════
 '''
 tester = PessoaFisica(endereco = "Rua do Teste nº 50", nome = "Testador", cpf = "12345678900", data_nascimento = "01012001")
+
+tester_conta = ContaCorrente.nova_conta(cliente = tester, numero = 12345, limite = 500, limite_saques = 3)
+contas.append(tester_conta)
+tester.contas.append(tester_conta)
+
 lista_clientes.append(tester)
 
 menu_inicial()

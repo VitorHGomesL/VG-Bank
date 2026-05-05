@@ -43,13 +43,23 @@ class Conta:
         if self._saldo < valor:
             print("\n❌ Operação negada: Saldo insuficiente para realizar este saque.")
             return False
-
+        
+        if valor <= 0:
+            print("\n❌ Operação negada: Impossível sacar valor negativo")
+            return False
+        
+        if not isinstance(valor, (int, float)):
+            print("\n Operação negada: impossível sacar texto")
+            return False
+        
         if self._saldo > valor:
             self._saldo -= valor
             print(f"\n✅ Saque no valor de R${valor:.2f} realizado com sucesso!")
             self._saques_realizados +=1
             return True
         
+
+            
     def depositar(self, valor):
         if valor > 0:
             self._saldo += valor
